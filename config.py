@@ -5,6 +5,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    APP_SETTINGS = os.environ.get("APP_SETTINGS")
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 
 

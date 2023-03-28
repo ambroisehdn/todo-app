@@ -1,6 +1,5 @@
 from flask_restful import Resource, Api, reqparse, abort
 
-
 def elementNotFound(id):
     
     abort(404, message="ressource {} doesn't exist".format(id))
