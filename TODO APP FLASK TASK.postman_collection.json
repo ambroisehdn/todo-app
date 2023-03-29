@@ -1,0 +1,330 @@
+{
+	"info": {
+		"_postman_id": "b9856ba1-fa25-48c7-b92f-6eb5c863c24c",
+		"name": "TODO APP FLASK TASK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25895690"
+	},
+	"item": [
+		{
+			"name": "USER",
+			"item": [
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"John Doe\",\n    \"username\": \"username\",\n    \"password\": \"passwordStrong\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/user/1",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get one",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/user/1",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/user/3",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/user",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\":\"John D5oe\",\n    \"username\":\"username\",\n    \"password\":\"passwordStrong\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/user",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TASK",
+			"item": [
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\":\"My task\",\n    \"description\": \"My task description\",\n    \"due_date\":\"2022-12-27\",\n    \"due_time\":\"11:34:56\",\n    \"user_id\": 1,\n    \"status\":\"Pending\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/task/1",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"task",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get one",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/task/12",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"task",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/task/13",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"task",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/task",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\":\"My task\",\n    \"description\": \"My task description\",\n    \"due_date\":\"2023-03-29\",\n    \"due_time\":\"11:34:56\",\n    \"user_id\": 1,\n    \"status\":\"Pending\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/task",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"task"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TODO",
+			"item": [
+				{
+					"name": "set status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"task_id\":5,\n    \"user_id\": 1,\n    \"status\":\"In progress\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/todo",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"todo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "my todo list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/vnd.api+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/todo?user_id=1&status=On hold",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"todo"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "1"
+								},
+								{
+									"key": "status",
+									"value": "On hold"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TASK STATUS",
+			"item": [
+				{
+					"name": "status list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/task-status",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"task-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

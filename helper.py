@@ -35,9 +35,9 @@ def timeDiff(due_time,current_time):
     hours = sec / (60 * 60)
 
     return {
-        "sec":sec.split('.')[0],
-        "min":min.split('.')[0],
-        "hours":hours.split('.')[0]
+        "sec":int(str(sec).split('.')[0]),
+        "min":int(str(min).split('.')[0]),
+        "hours":int(str(hours).split('.')[0])
     }
 
 class TaskUtil():
