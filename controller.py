@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse ,fields, marshal_with
-from model import User as UserModel,db,Task as TaskModel
+from model import TaskStatus, User as UserModel,db,Task as TaskModel
 from error import HttpError
 from helper import TaskUtil
 class User(Resource):
@@ -176,4 +176,39 @@ class TaskList(Resource,TaskUtil) :
 
         return self.customResponse(task), 201
 
+
+class Todo(Resource) :
+
+    def getUser(self,user_id):
+        return User.get(self,user_id)
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=int,help="Please provide the user_id",location="args",required=True)
+        parser.add_argument('status', type=TaskStatus,location="args")
+
+        data = parser.parse_args()
+
+        user_id = data['user_id']
+        status = data['status']
+
+        queryChain= TaskModel.query.filter_by(user_id=user_id)
+
+        if status :
+            queryChain = queryChain.filter_by(status=status)
+
+        records = queryChain.all()
+
+        todos = []
+        for record in records :
+            todos.append({
+            "id":record.id,
+            "title":record.title,
+            "description":record.description,
+            "status":str(record.status),
+            "due_date":str(record.due_date),
+            "due_time":str(record.due_time),
+            })
+
+        return {"user":self.getUser(user_id),"todos":todos}
 
