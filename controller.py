@@ -27,26 +27,38 @@ def userRessource():
 	}
 class User(Resource):
 
-	@marshal_with(userRessource())
-	def get(self,id):
+    @marshal_with(userRessource())
+    def get(self, id):
+        hasRecord = UserModel.query.filter_by(
+            id=int(id)).first()
+
+        if not hasRecord:
+            return HttpError(404, "The record with id").raise_error("not_found", identifier=str(id))
+        
+        return hasRecord,200
+        
+    def delete(self, id):
         # elementNotFound(id)
-		return {
-			"Hello": "User ok ok "+str(id)
-		},200
+	    return {"Hello": "User ok ok "}, 200
 
-	def delete(self, id):
-            # elementNotFound(id)
-		return {
-			"Hello": "User ok ok "
-		}, 200
 
-	@marshal_with(userRessource())
-	def put(self, id):
-            # elementNotFound(id)
-		return {
-			"Hello": "User ok ok "
-		}, 201
+    @marshal_with(userRessource())
+    def put(self, id):
+        data = userRequestBody().parse_args()
 
+        hasRecord = UserModel.query.filter_by(
+            id=int(id)).first()
+
+        if not hasRecord:
+            return HttpError(404, "The record with id").raise_error("not_found", identifier=str(id))
+        hasRecord.username = data["username"]
+        hasRecord.fullName = data["fullName"]
+        hasRecord.password = data["password"]
+        
+        db.session.commit()
+        
+        return hasRecord,200
+ 
 class UserList(Resource) :
     
     def get(self):
@@ -59,7 +71,6 @@ class UserList(Resource) :
             username=data['username']).first()
         
         if usernameExist:
-            print(usernameExist)
             error = HttpError(400, "The username with")
             return error.raise_error("already_exists", identifier=data['username'])
         
@@ -74,7 +85,7 @@ class UserList(Resource) :
 class Task(Resource):
 
 	def get(self,id):
-        # elementNotFound(id)
+     
 		return {
 			"Hello": "Task ok ok "+str(id)
 		},200
