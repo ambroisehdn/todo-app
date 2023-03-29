@@ -1,27 +1,28 @@
 from flask_restful import Resource, Api, reqparse, abort ,fields, marshal_with
-from model import User as UserModel,db
+from model import User as UserModel,db,Task as TaskModel,TaskStatus
 from error import HttpError
 
-def userRequestBody():
-	taskData = reqparse.RequestParser()
-	taskData.add_argument("fullName", type=str,
-                       help="Please provide the complete name", required=True)
-	taskData.add_argument("username", type=str,
-                       help="Please provide the username", required=True)
-	taskData.add_argument("password", type=str,
-                       help="Please provide the password", required=True)
-	return taskData
-
-def userRessource():
-    return {
-		"id":fields.Integer,
-		"fullName":fields.String,
-		"username":fields.String,
-		"password": fields.String
-	}
 class User(Resource):
 
-    @marshal_with(userRessource())
+    ressource = {
+		"id": fields.Integer,
+		"fullName": fields.String,
+		"username": fields.String,
+		"password": fields.String
+	}
+
+    def requestBody(self):
+        data = reqparse.RequestParser()
+        data.add_argument("fullName", type=str,
+                       help="Please provide the complete name", required=True)
+        data.add_argument("username", type=str,
+                       help="Please provide the username", required=True)
+        data.add_argument("password", type=str,
+                       help="Please provide the password", required=True)
+        return data
+    
+    
+    @marshal_with(ressource)
     def get(self, id):
         hasRecord = UserModel.query.filter_by(
             id=int(id)).first()
@@ -42,9 +43,9 @@ class User(Resource):
         return 'The record with {} has been deleted '.format(str(id)),204
 
 
-    @marshal_with(userRessource())
+    @marshal_with(ressource)
     def put(self, id):
-        data = userRequestBody().parse_args()
+        data = self.requestBody().parse_args()
 
         hasRecord = UserModel.query.filter_by(
             id=int(id)).first()
@@ -58,8 +59,10 @@ class User(Resource):
         db.session.commit()
         
         return hasRecord
- 
+
 class UserList(Resource) :
+    ressource = User.ressource
+    requestBody = User.requestBody
     
     def get(self):
         returnData = []
@@ -73,9 +76,9 @@ class UserList(Resource) :
 			})
         return returnData
     
-    @marshal_with(userRessource())
+    @marshal_with(ressource)
     def post(self):
-        data = userRequestBody().parse_args()
+        data = self.requestBody().parse_args()
         usernameExist = UserModel.query.filter_by(
             username=data['username']).first()
         
@@ -92,30 +95,57 @@ class UserList(Resource) :
 
 
 class Task(Resource):
+    ressource = {
+        "id": fields.Integer,
+      	"title": fields.String,
+      	"description": fields.String,
+      	"status": fields.Raw(attribute=lambda TaskStatus: TaskStatus),
+		"due_date": fields.String,
+		"due_time": fields.String,
+		"user_id":fields.Integer
+    }
 
-	def get(self,id):
-     
-		return {
+    def requestBody(self):
+        data = reqparse.RequestParser()
+        data.add_argument("title", type=str,
+                          help="Please provide the title", required=True)
+        data.add_argument("description", type=str,
+                              help="Please provide the description", required=True)
+        data.add_argument("due_date", type=reqparse.inputs.date,
+                          help="Please provide the due_date", required=True)
+        data.add_argument("due_time", type=reqparse.inputs.time,
+                          help="Please provide the due_time", required=True)
+        data.add_argument("user_id", type=int,
+                          help="Please provide the user_id", required=True)
+        data.add_argument("status", type=TaskStatus)
+        
+        return data
+    
+    @marshal_with(ressource)
+    def get(self,id):
+        return {
 			"Hello": "Task ok ok "+str(id)
 		},200
-
-	def delete(self, id):
-            # elementNotFound(id)
-		return {
+        
+    def delete(self, id): 
+     	return {
 			"Hello": "Task ok ok "
 		}, 200
-
-	def put(self, id):
-            # elementNotFound(id)
-		return {
+      
+    @marshal_with(ressource)
+    def put(self, id):
+        return {
 			"Hello": "Task ok ok "
 		}, 201
 
 class TaskList(Resource) :
+    ressource = Task.ressource
+    requestBody = Task.requestBody
     
     def get(self):
         return {}
     
+    @marshal_with(ressource)
     def post(self):
         return '',201
 
