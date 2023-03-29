@@ -32,3 +32,9 @@ Flask Todo App
 
 ## API COLLECTION
 
+`File : TODO APP FLASK TASK.postman_collection.json`
+
+
+## SHEDULER  
+
+    MESSAGE IS DISPLAY IN TERMINALE ::: "Your time is ready ! Say no to procrastination and get your work done"

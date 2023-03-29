@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.config.from_object(devConf.APP_SETTINGS)
 
 api = Api(app)
+# api = swagger.docs(Api(app), apiVersion='0.1')
 
 migrate = Migrate(app,db)
 
