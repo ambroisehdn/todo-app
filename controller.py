@@ -148,11 +148,14 @@ class Task(Resource,TaskUtil):
 class TaskList(Resource,TaskUtil) :
 
     def get(self):
-        return {}
+        data = []
+        tasks = TaskModel.query.all()
+        for task in tasks :
+            data.append(self.customResponse(task))
+        return data
 
     def getUser(self,user_id):
         return User.get(self,user_id)
-
 
     # @marshal_with(ressource)
     def post(self):
