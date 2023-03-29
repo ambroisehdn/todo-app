@@ -35,6 +35,11 @@ class TaskStatus(enum.Enum):
     def __str__(self):
         return '%s' % self.value
 
+    @classmethod
+    def list(cls):
+        #return list({i.name: i.value for i in TaskStatus})
+        return list(map(lambda c: c.value, cls))
+
 class Task(db.Model):
     __tablename__ = 'tasks'
 

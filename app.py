@@ -4,7 +4,7 @@ from flask_restful import Api
 from flask_migrate import Migrate
 from model import db
 
-from controller import User ,UserList,Task,TaskList,Todo
+from controller import User ,UserList,Task,TaskList,Todo,TaskStatusList
 
 from config import DevelopmentConfig as devConf
 
@@ -28,6 +28,7 @@ api.add_resource(User, '/user/<int:id>',endpoint='user_ep')
 
 api.add_resource(TaskList, '/task')
 api.add_resource(Task, '/task/<int:id>', endpoint='task_ep')
+api.add_resource(TaskStatusList, '/task-status')
 api.add_resource(Todo, '/todo', endpoint='todo_ep')
 
 if __name__ == '__main__':

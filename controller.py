@@ -176,8 +176,22 @@ class TaskList(Resource,TaskUtil) :
 
         return self.customResponse(task), 201
 
+class TaskStatusList(Resource):
+
+    def get(self):
+        return TaskStatus.list()
 
 class Todo(Resource) :
+
+    def requestBody(self):
+        data = reqparse.RequestParser()
+        data.add_argument("user_id", type=int,
+                          help="Please provide the user_id", required=True)
+        data.add_argument("task_id", type=int,
+                              help="Please provide the task_id", required=True)
+        data.add_argument("status", type=TaskStatus,required=True)
+
+        return data
 
     def getUser(self,user_id):
         return User.get(self,user_id)
@@ -212,3 +226,20 @@ class Todo(Resource) :
 
         return {"user":self.getUser(user_id),"todos":todos}
 
+    def put(self):
+        data = self.requestBody().parse_args()
+
+        user_id = data['user_id']
+        id = data['task_id']
+        status = data['status']
+
+        record = TaskModel.query.filter_by(id=id).filter_by(user_id=user_id).first()
+
+        if not record:
+            return HttpError(404, "The task don't found").raise_error("not_found")
+
+        record.status = status
+
+        db.session.commit()
+
+        return {"message":"Your task status is set to {}".format(status)},201
