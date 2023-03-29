@@ -18,6 +18,7 @@ class User(db.Model):
         self.fullName = fullName
         self.username = username
         self.password = password
+        super(User, self).__init__()
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
