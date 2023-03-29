@@ -2,12 +2,6 @@ from flask_restful import Resource, Api, reqparse, abort ,fields, marshal_with
 from model import User as UserModel,db
 from error import HttpError
 
-# def notFound(id):
-#     abort(404, message="ressource with id {} doesn't exist".format(id))
-
-# def alreadyExist(field):
-#     abort(400,message="Thi field {} with the same value already exist".format(field))
-
 def userRequestBody():
 	taskData = reqparse.RequestParser()
 	taskData.add_argument("fullName", type=str,
@@ -35,11 +29,17 @@ class User(Resource):
         if not hasRecord:
             return HttpError(404, "The record with id").raise_error("not_found", identifier=str(id))
         
-        return hasRecord,200
+        return hasRecord
         
     def delete(self, id):
-        # elementNotFound(id)
-	    return {"Hello": "User ok ok "}, 200
+        hasRecord = UserModel.query.filter_by(
+            id=int(id)).first()
+
+        if not hasRecord:
+            return HttpError(404, "The record with id").raise_error("not_found", identifier=str(id))
+        db.session.delete(hasRecord)
+        db.session.commit()
+        return 'The record with {} has been deleted '.format(str(id)),204
 
 
     @marshal_with(userRessource())
@@ -57,12 +57,21 @@ class User(Resource):
         
         db.session.commit()
         
-        return hasRecord,200
+        return hasRecord
  
 class UserList(Resource) :
     
     def get(self):
-        return {}
+        returnData = []
+        users = UserModel.query.all()
+        for user in users :
+            returnData.append({
+				'id':user.id,
+				'fullName': user.fullName,
+				'username':user.username,
+				'password': user.password,
+			})
+        return returnData
     
     @marshal_with(userRessource())
     def post(self):
