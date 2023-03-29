@@ -1,3 +1,4 @@
+import datetime
 from flask_sqlalchemy import SQLAlchemy
 import enum
 
@@ -24,14 +25,16 @@ class User(db.Model):
         return '<id {}>'.format(self.id)
 
 class TaskStatus(enum.Enum):
-    
+
     Pending = "Pending"
     InProgress = "In progress"
     OnHold = "On hold"
     Completed = "Completed"
     Cancelled = "Cancelled"
-    
-    
+
+    def __str__(self):
+        return '%s' % self.value
+
 class Task(db.Model):
     __tablename__ = 'tasks'
 
@@ -47,10 +50,14 @@ class Task(db.Model):
     update_at = db.Column(db.DateTime, nullable=False,
                           server_default=db.func.now(), server_onupdate=db.func.now())
 
-    def __init__(self, title, description, status):
+    def __init__(self, title, description,due_date,due_time,status,user_id):
         self.title = title
         self.description = description
         self.status = status
+        self.due_date = datetime.date.fromisoformat(due_date)
+        self.due_time = datetime.time.fromisoformat(due_time)
+        self.user_id = user_id
+        super(Task, self).__init__()
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

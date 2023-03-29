@@ -29,3 +29,5 @@ Flask Todo App
 ## Run App
 
 ```flask run```
+
+## API COLLECTION
