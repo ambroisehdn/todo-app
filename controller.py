@@ -99,7 +99,7 @@ class Task(Resource,TaskUtil):
     def getUser(self,user_id):
         return User.get(self,user_id)
 
-    @marshal_with(TaskUtil.ressource)
+    # @marshal_with(TaskUtil.ressource)
     def get(self, id):
         record = TaskModel.query.filter_by(
             id=int(id)).first()
@@ -107,7 +107,7 @@ class Task(Resource,TaskUtil):
         if not record:
             return HttpError(404, "The record with id").raise_error("not_found", identifier=str(id))
 
-        return record
+        return self.customResponse(record)
 
     def delete(self, id):
         record = TaskModel.query.filter_by(

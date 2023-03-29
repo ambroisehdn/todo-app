@@ -7,10 +7,18 @@ from model import TaskStatus
 
 class DateFormat(fields.Raw):
     def format(self, value):
-        return date.strftime(value,'%Y-%m-%d')
+        if type(value) == str :
+            return value
+        else : return date.strftime(value,'%Y-%m-%d')
 
 class TimeFormat(fields.Raw):
     def format(self, value):
+
+
+
+        if type(value) == str :
+            return value
+        else : return time.strftime(value, "%H:%M")
         return time.strftime(value, "%H:%M")
 
 
