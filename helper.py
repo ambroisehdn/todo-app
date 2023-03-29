@@ -1,5 +1,5 @@
 from flask_restful import fields
-from datetime import time,date
+from datetime import time,date,datetime
 
 from flask_restful import reqparse
 
@@ -22,6 +22,23 @@ class TimeFormat(fields.Raw):
         return time.strftime(value, "%H:%M")
 
 
+
+def timeDiff(due_time,current_time):
+
+    FMT = '%H:%M:%S'
+    delta = datetime.strptime(str(due_time), FMT) - datetime.strptime(str(current_time).split(".")[0], FMT)
+
+    sec = delta.total_seconds()
+
+    min = sec / 60
+
+    hours = sec / (60 * 60)
+
+    return {
+        "sec":sec.split('.')[0],
+        "min":min.split('.')[0],
+        "hours":hours.split('.')[0]
+    }
 
 class TaskUtil():
 

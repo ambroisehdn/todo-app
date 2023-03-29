@@ -1,7 +1,9 @@
-from model import User as UserModel
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_migrate import Migrate
+
+from scheduler import scheduler
+
 from model import db
 
 from controller import User ,UserList,Task,TaskList,Todo,TaskStatusList
@@ -17,6 +19,9 @@ api = Api(app)
 migrate = Migrate(app,db)
 
 db.init_app(app)
+
+scheduler.init_app(app)
+scheduler.start()
 
 @app.route('/')
 def index():
