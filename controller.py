@@ -1,8 +1,7 @@
-from datetime import date, time
-from flask_restful import Resource, Api, reqparse ,fields, marshal_with
-from model import User as UserModel,db,Task as TaskModel,TaskStatus
+from flask_restful import Resource, reqparse ,fields, marshal_with
+from model import User as UserModel,db,Task as TaskModel
 from error import HttpError
-from helper import DateFormat,TimeFormat
+from helper import TaskUtil
 class User(Resource):
 
     ressource = {
@@ -95,39 +94,12 @@ class UserList(Resource) :
         return user, 201
 
 
-class Task(Resource):
+class Task(Resource,TaskUtil):
 
     def getUser(self,user_id):
-        return User.get(user_id)
+        return User.get(self,user_id)
 
-    ressource = {
-        "id": fields.Integer,
-      	"title": fields.String,
-      	"description": fields.String,
-      	"status": fields.Raw(attribute=lambda TaskStatus: TaskStatus),
-		"due_date": DateFormat,
-		"due_time": TimeFormat,
-		"user_id":fields.Integer,
-		# "user":fields.Raw,
-    }
-
-    def requestBody(self):
-        data = reqparse.RequestParser()
-        data.add_argument("title", type=str,
-                          help="Please provide the title", required=True)
-        data.add_argument("description", type=str,
-                              help="Please provide the description", required=True)
-        data.add_argument("due_date", type=str,
-                          help="Please provide the due_date", required=True)
-        data.add_argument("due_time", type=str,
-                          help="Please provide the due_time", required=True)
-        data.add_argument("user_id", type=int,
-                          help="Please provide the user_id", required=True)
-        data.add_argument("status", type=TaskStatus)
-
-        return data
-
-    @marshal_with(ressource)
+    @marshal_with(TaskUtil.ressource)
     def get(self, id):
         record = TaskModel.query.filter_by(
             id=int(id)).first()
@@ -147,50 +119,58 @@ class Task(Resource):
         db.session.commit()
         return 'The record with {} has been deleted '.format(str(id)),204
 
-    @marshal_with(ressource)
+    # @marshal_with(ressource)
     def put(self, id):
-        return {
-			"Hello": "Task ok ok "
-		}, 201
+        data = self.requestBody().parse_args()
 
-class TaskList(Resource) :
-    ressource = Task.ressource
-    requestBody = Task.requestBody
+        record = TaskModel.query.filter_by(
+            id=int(id)).first()
+
+        user_id = data['user_id']
+
+        self.getUser(user_id) #check if user exist
+
+        status = TaskList.statusIsSet(self,data=data)
+
+        if not record:
+            return HttpError(404, "The record with id").raise_error("not_found", identifier=str(id))
+        record.title = data["title"]
+        record.description = data["description"]
+        record.due_date = data["due_date"]
+        record.due_time = data["due_time"]
+        record.status = status
+
+        db.session.commit()
+
+        return self.customResponse(record),201
+
+
+class TaskList(Resource,TaskUtil) :
+
+    def get(self):
+        return {}
 
     def getUser(self,user_id):
         return User.get(self,user_id)
 
-    def customResponse(self, task):
-        status = task.status
-        dataReturn = {
-            "title":task.title,
-            "description":task.description,
-            "status":str(status),
-            "due_date":str(task.due_date),
-            "due_time":str(task.due_time),
-            'user':self.getUser(task.user_id)}
-
-        return dataReturn
-
-    def get(self):
-        return {}
 
     # @marshal_with(ressource)
     def post(self):
         data = self.requestBody().parse_args()
 
-        if not data['status'] :
-            status = TaskStatus.OnHold
-        else : status = data['status']
+        userId = data['user_id']
+
+        status = self.statusIsSet(data)
+
+        self.getUser(userId) #check if user exist
 
         task = TaskModel(
             title=data["title"], description=data['description'], due_date=data['due_date'],
-            due_time=data["due_time"], user_id=data['user_id'], status=status,
+            due_time=data["due_time"], user_id=userId, status=status,
             )
         db.session.add(task)
         db.session.commit()
 
         return self.customResponse(task), 201
-
 
 
